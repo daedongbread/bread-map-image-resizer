@@ -10,8 +10,8 @@ const S3 = new AWS.S3({
 const BUCKET = 'BUCKET_NAME';
 
 exports.handler = async (event, context, callback) => {
-    if (BUCKET === 'BUCKET_NAME') {
-        console.error(`BUCKET_NAME is not initialize`);
+    if (BUCKET === 'BUCKET' + '_' + 'NAME') {
+        console.error(`bucket name is not initialize`);
         return callback(null, response);
     }
 
@@ -21,13 +21,13 @@ exports.handler = async (event, context, callback) => {
         return callback(null, response);
     }
 
-    // Parameters are w, h, f, q and indicate width, height, format and quality.
+    // Parameters are w, h, q and indicate width, height and quality.
     const params = querystring.parse(request.querystring);
     console.log(`parmas: ${JSON.stringify(params)}`); // Cannot convert object to primitive value.
 
     // Required width or height value.
     if (!params.w || !params.h) {
-        console.error(`query parameter is wrong. w,h,f,q : ${params.w},${params.h},${params.f},${params.q}`);
+        console.error(`query parameter is wrong. w,h,q : ${params.w},${params.h},${params.q}`);
         return callback(null, response);
     }
 
