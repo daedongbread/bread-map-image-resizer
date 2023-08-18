@@ -10,6 +10,7 @@ const S3 = new AWS.S3({
 const BUCKET = 'BUCKET_NAME';
 
 exports.handler = async (event, context, callback) => {
+    console.log(`event: ${JSON.stringify(event.Records[0])}`);
     if (BUCKET === 'BUCKET' + '_' + 'NAME') {
         console.error(`bucket name is not initialize`);
         return callback(null, response);
