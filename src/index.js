@@ -22,20 +22,24 @@ exports.handler = async (event, context, callback) => {
         return callback(null, response);
     }
 
+    // Extract name and format.
+    const { uri } = request;
+    const [, imageName, extension] = uri.match(/\/?(.*)\.(.*)/);
+
+    if (`${imageName}.${extension}` == 'favicon.ico') {
+        return callback(null, response);
+    }
+    console.log(`name: ${imageName}.${extension}`);
+
     // Parameters are w, h, q and indicate width, height and quality.
     const params = querystring.parse(request.querystring);
     console.log(`parmas: ${JSON.stringify(params)}`); // Cannot convert object to primitive value.
 
     // Required width or height value.
     if (!params.w || !params.h) {
-        console.error(`query parameter is wrong. w,h,q : ${params.w},${params.h},${params.q}`);
+        // console.error(`query parameter is wrong. w,h,q : ${params.w},${params.h},${params.q}`);
         return callback(null, response);
     }
-
-    // Extract name and format.
-    const { uri } = request;
-    const [, imageName, extension] = uri.match(/\/?(.*)\.(.*)/);
-    console.log(`name: ${imageName}.${extension}`); // Favicon error, if name is `favicon.ico`.
 
     // Init variables
     let width;
@@ -50,9 +54,9 @@ exports.handler = async (event, context, callback) => {
     height = parseInt(params.h, 10) ? parseInt(params.h, 10) : null;
 
     // Init quality.
-    quality = parseInt(params.q, 10) ? parseInt(params.q, 10) : 95;
-    if (quality > 95) {
-        quality = 95;
+    quality = parseInt(params.q, 10) ? parseInt(params.q, 10) : 100;
+    if (quality > 100) {
+        quality = 100;
     }
     if (quality < 10) {
         quality = 10;
@@ -75,7 +79,9 @@ exports.handler = async (event, context, callback) => {
 
     try {
         resizedImage = await Sharp(s3Object.Body)
+            .rotate()
             .resize(width, height)
+            .withMetadata()
             .toFormat("jpeg", {
                 quality
             })
