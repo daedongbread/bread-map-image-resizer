@@ -17,10 +17,6 @@ exports.handler = async (event, context, callback) => {
     }
 
     const { request, response } = event.Records[0].cf;
-    if (Number(response.status) !== 200) {
-        console.error(`response status is ${response.status}, not 200`);
-        return callback(null, response);
-    }
 
     // Extract name and format.
     const { uri } = request;
@@ -30,6 +26,12 @@ exports.handler = async (event, context, callback) => {
         return callback(null, response);
     }
     console.log(`name: ${imageName}.${extension}`);
+
+
+    if (Number(response.status) !== 200) {
+        console.error(`response status is ${response.status}, not 200`);
+        return callback(null, response);
+    }
 
     // Parameters are w, h, q and indicate width, height and quality.
     const params = querystring.parse(request.querystring);
