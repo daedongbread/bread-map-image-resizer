@@ -20,19 +20,12 @@ exports.handler = async (event, context, callback) => {
     // Extract name and format.
     const { uri } = request;
     const [, imageName, extension] = uri.match(/\/?(.*)\.(.*)/);
-
+    console.log(`name: ${imageName}.${extension}`);
+    
     if (`${imageName}.${extension}` == 'favicon.ico') {
         return callback(null, response);
     }
     console.log(`event: ${JSON.stringify(event.Records[0])}`);
-    
-    console.log(`name: ${imageName}.${extension}`);
-
-
-    if (Number(response.status) !== 200) {
-        console.error(`response status is ${response.status}, not 200`);
-        return callback(null, response);
-    }
 
     // Parameters are w, h, q and indicate width, height and quality.
     const params = querystring.parse(request.querystring);
@@ -41,6 +34,11 @@ exports.handler = async (event, context, callback) => {
     // Required width or height value.
     if (!params.w || !params.h) {
         // console.error(`query parameter is wrong. w,h,q : ${params.w},${params.h},${params.q}`);
+        return callback(null, response);
+    }
+
+    if (Number(response.status) !== 200 || Number(response.status) !== 304) {
+        console.error(`response status is ${response.status}, not 200 or 304`);
         return callback(null, response);
     }
 
