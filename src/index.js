@@ -37,7 +37,7 @@ exports.handler = async (event, context, callback) => {
         return callback(null, response);
     }
 
-    if (Number(response.status) !== 200 || Number(response.status) !== 304) {
+    if (Number(response.status) !== 200 && Number(response.status) !== 304) {
         console.error(`response status is ${response.status}, not 200 or 304`);
         return callback(null, response);
     }
